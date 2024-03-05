@@ -3,7 +3,7 @@ async def scrolling(content: list, start: int, request):
         start = 1
     if start < 1:
         start = len(content)
-    content_dict = {x: y for x, y in enumerate([x['file_to_description_id'] for x in content], start=1)}
+    content_dict = {y: x for x, y in enumerate([x['file_to_description_id'] for x in content], start=1)}
     first_content = content_dict.get(start)
     file_to_description = await request.get_file_to_description(first_content)
     scroll_data = [first_content, len(content_dict)]
