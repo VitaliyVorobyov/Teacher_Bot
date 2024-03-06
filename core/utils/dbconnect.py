@@ -146,8 +146,9 @@ class Request:
             button_id
         )
 
-    async def delete_content_to_button(self, button_id: int):
+    async def delete_content_to_button(self, content_to_button_id: int):
         await self.connector.execute(
-            "DELETE FROM Content_To_Button WHERE button_id = $1",
-            button_id
+            "DELETE FROM Content_To_Button WHERE content_to_button_id = $1",
+            content_to_button_id
         )
+
