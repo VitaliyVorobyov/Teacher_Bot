@@ -152,3 +152,7 @@ class Request:
             content_to_button_id
         )
 
+    async def drop_unique_constraint(self):
+        await self.connector.execute(
+            "ALTER TABLE Buttons DROP CONSTRAINT buttons_name_button_key"
+        )
