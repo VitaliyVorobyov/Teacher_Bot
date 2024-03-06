@@ -42,7 +42,8 @@ def keyboard_user(keyboard: dict, back: bool = True, admin: bool = False, new_di
     return kb.as_markup()
 
 
-def keyboard_edit_content(scroll_data: list = None, admin: bool = False, publish: bool = False, new_dir: bool = False):
+def keyboard_edit_content(scroll_data: list = None, admin: bool = False, publish: bool = False, new_dir: bool = False,
+                          content_id: int = None):
     kb = InlineKeyboardBuilder()
     if scroll_data:
         kb.button(text='<<<', callback_data=UserData(id=scroll_data[0], name='scroll', add_name='last_page'))
@@ -56,17 +57,18 @@ def keyboard_edit_content(scroll_data: list = None, admin: bool = False, publish
             kb.button(text="Сохранить и Опубликовать", callback_data=KeyboardAdmin(name="publish"))
         if new_dir:
             kb.button(text='+ Новый раздел', callback_data=KeyboardAdmin(name='new_button'))
+    kb.button(text="Удалить", callback_data=Register(id=content_id, name="delete"))
     kb.button(text='Назад', callback_data=Back(name='back'))
     if scroll_data and admin:
         if publish:
-            kb.adjust(3, 2, 1, 1)
+            kb.adjust(3, 2, 1, 1, 1)
         else:
-            kb.adjust(3, 2, 1)
+            kb.adjust(3, 2, 1, 1)
     if admin and not scroll_data:
         if new_dir and publish:
-            kb.adjust(2, 1, 1, 1)
+            kb.adjust(2, 1, 1, 1, 1)
         else:
-            kb.adjust(2, 1, 1)
+            kb.adjust(2, 1, 1, 1)
     return kb.as_markup()
 
 

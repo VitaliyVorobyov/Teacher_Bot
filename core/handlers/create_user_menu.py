@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from core.keyboards.inline import keyboard_admin, keyboard_back
-from core.utils.callbackdata import KeyboardAdmin
+from core.utils.callbackdata import KeyboardAdmin, Register
 from core.utils.states import ContentMenuState
 from core.utils.dbconnect import Request
 from core.utils.edit_message import edit_message
@@ -56,3 +56,19 @@ async def add_button_name(message: Message, bot: Bot, state: FSMContext, request
     await state.clear()
     await bot.delete_message(message.from_user.id, message.message_id)
     await edit_message(bot, message.message_id, keyboard_back(), 'Раздел добавлен', message.chat.id, file)
+
+
+@router.callback_query(Register.filter(F.name == 'delete'))
+async def delite(call: CallbackQuery, bot: Bot, callback_data: Register, request: Request, state: FSMContext):
+    content_id = callback_data.id
+    file = await request.get_file(1)
+    if content_id == 0:
+        context = await state.get_data()
+        button_id = context.get('id_button')
+        await request.delete_button(button_id)
+        await state.clear()
+        await edit_message(bot, call.message.message_id, keyboard_back(), 'Раздел удален', call.from_user.id, file)
+    else:
+        await request.delete_content_to_button(content_id)
+        await state.clear()
+        await edit_message(bot, call.message.message_id, keyboard_back(), 'Контент удален', call.from_user.id, file)

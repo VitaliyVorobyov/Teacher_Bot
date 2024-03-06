@@ -11,4 +11,4 @@ async def scrolling(content: list, start: int, request):
     description_id = file_to_description[0]['description_id']
     description = await request.get_description(description_id)
     file = await request.get_file(row_id)
-    return scroll_data, file, description
+    return scroll_data, file, description, first_content

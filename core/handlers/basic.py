@@ -40,13 +40,14 @@ async def navigate_to_menu(call: CallbackQuery, bot: Bot, callback_data: UserDat
         await state.update_data(id_button=callback_data.id)
         content = await request.get_content_for_button(callback_data.id)
         if content:
-            scroll_data, file, description = await scrolling(content, 1, request)
+            scroll_data, file, description, content_id = await scrolling(content, 1, request)
             await bot.edit_message_media(InputMediaPhoto(media=file, caption=description),
                                          call.from_user.id, call.message.message_id,
-                                         reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True))
+                                         reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True,
+                                                                            content_id=content_id))
         else:
             await bot.edit_message_caption(call.from_user.id, call.message.message_id, caption='Раздел пуст',
-                                           reply_markup=keyboard_edit_content(admin=True, new_dir=True))
+                                           reply_markup=keyboard_edit_content(admin=True, new_dir=True, content_id=0))
     else:
         await bot.edit_message_caption(call.from_user.id, call.message.message_id, caption=f'Выберите раздел',
                                        reply_markup=keyboard_user(keywords_dict, new_dir=True))
@@ -57,10 +58,11 @@ async def next_page(call: CallbackQuery, bot: Bot, callback_data: UserData, stat
     context = await state.get_data()
     button_id = context.get('id_button')
     content = await request.get_content_for_button(button_id)
-    scroll_data, file, description = await scrolling(content, callback_data.id+1, request)
+    scroll_data, file, description, content_id = await scrolling(content, callback_data.id+1, request)
     await bot.edit_message_media(InputMediaPhoto(media=file, caption=description),
                                  call.from_user.id, call.message.message_id,
-                                 reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True))
+                                 reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True,
+                                                                    content_id=content_id))
 
 
 @router.callback_query(UserData.filter(F.add_name == 'last_page'))
@@ -68,10 +70,11 @@ async def next_page(call: CallbackQuery, bot: Bot, callback_data: UserData, stat
     context = await state.get_data()
     button_id = context.get('id_button')
     content = await request.get_content_for_button(button_id)
-    scroll_data, file, description = await scrolling(content, callback_data.id-1, request)
+    scroll_data, file, description, content_id = await scrolling(content, callback_data.id-1, request)
     await bot.edit_message_media(InputMediaPhoto(media=file, caption=description),
                                  call.from_user.id, call.message.message_id,
-                                 reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True))
+                                 reply_markup=keyboard_edit_content(scroll_data=scroll_data, admin=True,
+                                                                    content_id=content_id))
 
 
 @router.callback_query(Back.filter(F.name == 'back'))

@@ -139,3 +139,15 @@ class Request:
         return await self.connector.fetch(
             "SELECT user_id FROM Users"
         )
+
+    async def delete_button(self, button_id: int):
+        await self.connector.execute(
+            "DELETE FROM Buttons WHERE button_id = $1",
+            button_id
+        )
+
+    async def delete_content_to_button(self, button_id: int):
+        await self.connector.execute(
+            "DELETE FROM Content_To_Button WHERE button_id = $1",
+            button_id
+        )
